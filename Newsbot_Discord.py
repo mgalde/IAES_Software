@@ -4,7 +4,7 @@ import time
 from datetime import datetime, date
 from email.utils import parsedate
 
-WEBHOOK_URL = 'https://discordapp.com/api/webhooks/xxxxxxxx'
+WEBHOOK_URL = 'https://discordapp.com/api/webhooks/xxxxx'
 INTERVAL = 10 * 60  # Check every 10 minutes
 
 RSS_FEEDS = [
@@ -35,7 +35,12 @@ def fetch_articles():
         feed = feedparser.parse(rss_feed)
 
         for entry in feed.entries:
-            published_date = datetime.fromtimestamp(time.mktime(parsedate(entry.published))).date()
+            published_date = parsedate(entry.published)
+
+            if published_date is None:
+                continue
+
+            published_date = datetime.fromtimestamp(time.mktime(published_date)).date()
 
             # Check if the article was published on the same day
             if published_date == today:
